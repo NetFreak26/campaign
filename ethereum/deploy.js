@@ -19,9 +19,9 @@ const deploy = async () => {
                             .deploy({ data: compiledCampaignFactory.evm.bytecode.object})
                             .send({ from: accounts[0], gas: 10000000});
 
+    console.log(factoryContract.options.address);
+
     provider.engine.stop();
 }
 
 deploy();
-
-export default address = factoryContract.options.address;
