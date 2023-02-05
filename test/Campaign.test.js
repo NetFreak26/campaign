@@ -6,7 +6,6 @@ const web3 = new Web3(ganache.provider());
 
 const compiledCampaignFactory = require('../ethereum/build/CampaignFactory.json');
 const compiledCampaign = require('../ethereum/build/Campaign.json');
-const { on } = require('events');
 
 let accounts;
 let campaignFactory;
