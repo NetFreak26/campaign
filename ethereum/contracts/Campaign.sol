@@ -3,11 +3,25 @@ pragma solidity >=0.8.17;
 
 contract CampaignFactory {
     
-    address[] public campaigns;
+    struct CampaignDetails {
+        string campaignName;
+        string campaignDescription;
+        address campaignAddress;
+        uint deadline;
+    }
+    CampaignDetails[] public campaigns;
 
-    function createCampaign(uint _minimumContribution, uint _target, uint _deadline) public {
-        Campaign campaign = new Campaign(_minimumContribution, _target, _deadline, msg.sender);
-        campaigns.push(address(campaign));
+    function createCampaign(string memory _campaignName, string memory _campaignDescription, uint _minimumContribution, uint _target, uint _deadline) public {
+        Campaign campaign = new Campaign(_campaignName, _campaignDescription, _minimumContribution, _target, _deadline, msg.sender);
+        CampaignDetails storage campaignDetails = campaigns.push();
+        campaignDetails.campaignAddress = address(campaign);
+        campaignDetails.campaignName = _campaignName;
+        campaignDetails.campaignDescription = _campaignDescription;
+        campaignDetails.deadline = campaign.deadline();
+    }
+
+    function getCampaigns() public view returns(CampaignDetails[] memory) {
+        return campaigns;
     }
 }
 
@@ -23,6 +37,8 @@ contract Campaign {
         mapping(address=>bool) approvers;
     }
 
+    string public campaignName;
+    string public campaignDescription;
     address public manager;
     uint public minimumContribution;
     uint public target;
@@ -34,7 +50,9 @@ contract Campaign {
     bool onlyOnce = true;
 
 
-    constructor(uint _minimumContribution, uint _target, uint _deadline, address _manager) {
+    constructor(string memory _campaignName, string memory _campaignDescription, uint _minimumContribution, uint _target, uint _deadline, address _manager) {
+        campaignName = _campaignName;
+        campaignDescription = _campaignDescription;
         minimumContribution = _minimumContribution;
         target = _target;
         deadline = block.timestamp + _deadline;

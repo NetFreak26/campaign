@@ -19,7 +19,7 @@ beforeEach(async () => {
                         .deploy({data: compiledCampaignFactory.evm.bytecode.object})        
                         .send({from: accounts[0], gas: 10000000});
 
-    await campaignFactory.methods.createCampaign(1000, 10000, 6).send({
+    await campaignFactory.methods.createCampaign("Education", "Want to teach children", 1000, 10000, 6).send({
         from: accounts[1],
         gas: 10000000
     });
