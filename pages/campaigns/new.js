@@ -1,8 +1,9 @@
 import Layout from "../../components/Layout";
-import { Form, Input, TextArea, Button, Dropdown} from "semantic-ui-react";
+import { Form, Input, TextArea, Button, Dropdown, Message} from "semantic-ui-react";
 import { useState } from "react";
 import factoryContract from "../../ethereum/factory";
 import web3 from "../../ethereum/web3";
+import { useRouter } from "next/router";
 
 const CreateCampaignTemplate = () => {
 
@@ -13,6 +14,12 @@ const CreateCampaignTemplate = () => {
         target: "",
         deadline: ""
     })
+
+    const [ errorMessage, setErrorMessage ] = useState("");
+
+    const [ loading, setLoading ] = useState(false);
+
+    const router = useRouter();
 
     const handleChange = (event) => {
         const name = event.target.name;
@@ -25,16 +32,23 @@ const CreateCampaignTemplate = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log(campaignStates);
-        const accounts = await web3.eth.getAccounts();
-        console.log(accounts);
-        await factoryContract.methods
-                .createCampaign(campaignStates.campaignName, campaignStates.campaignDescription, campaignStates.minimumContribution, campaignStates.target, campaignStates.deadline);
+        try {
+            setLoading(true);
+            setErrorMessage("");
+            const accounts = await web3.eth.getAccounts();
+            await factoryContract.methods
+                            .createCampaign(campaignStates.campaignName, campaignStates.campaignDescription, campaignStates.minimumContribution, campaignStates.target, campaignStates.deadline)
+                            .send({from: accounts[0]});
+            router.push('/');
+        } catch (err) {
+            setErrorMessage(err.message);
+        }
+        setLoading(false);
     }
 
     return (
         <Layout>
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit} error={errorMessage !== undefined && errorMessage.length>0}>
                 <Form.Field
                     id='campaignName'
                     control={Input}
@@ -93,7 +107,9 @@ const CreateCampaignTemplate = () => {
                     />
                 </Form.Field>
 
-                <Button floated="right" content='Add Campaign' icon='add' primary />
+                <Message error header="Oops!!!" content={errorMessage} />
+
+                <Button loading={loading} floated="right" content='Add Campaign' icon='add' primary />
             </Form>
         </Layout>
     )

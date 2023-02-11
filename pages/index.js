@@ -9,29 +9,34 @@ const CampaignIndex = (props) => {
         { menuItem: 'Closed Campaigns', render: () => <Tab.Pane>{renderClosedCampaigns}</Tab.Pane> }
     ]
 
-    const renderOpenCampaigns = props.campaigns.filter(campaign => campaign[3] <= (new Date).getSeconds()).map((campaign, index) => {
-        console.log((new Date).getSeconds);
-        return (
-            <Card.Group>
-                <Card key={index} fluid>
-                    <Card.Content>
-                        <Card.Header>{campaign[0]}</Card.Header>
-                        <Card.Meta>{campaign[2]}</Card.Meta>
-                        <Card.Description>{campaign[1]}</Card.Description>
-                        <Card.Description>{campaign[3]}</Card.Description>
-                    </Card.Content>
-                    <Card.Content extra>
-                        <Button>View Campaign</Button>
-                    </Card.Content>
-                </Card>
-            </Card.Group>
-        )
-    })
+    const filterOpen = (deadline) => {
+        return deadline >= (Date.now() / 1000);
+    }
 
-    const renderClosedCampaigns = props.campaigns.filter(campaign => campaign[3] > (new Date).getSeconds()).map((campaign, index) => {
+    const renderOpenCampaigns = props.campaigns
+        .filter(campaign => filterOpen(campaign[3]))
+        .map((campaign, index) => {
+            return (
+                <Card.Group key={index}>
+                    <Card fluid>
+                        <Card.Content>
+                            <Card.Header>{campaign[0]}</Card.Header>
+                            <Card.Meta>{campaign[2]}</Card.Meta>
+                            <Card.Description>{campaign[1]}</Card.Description>
+                        </Card.Content>
+                        <Card.Content extra>
+                            <Button>View Campaign</Button>
+                        </Card.Content>
+                    </Card>
+                </Card.Group>
+            )
+        }
+    )
+
+    const renderClosedCampaigns = props.campaigns.filter(campaign => !filterOpen(campaign[3])).map((campaign, index) => {
         return (
-            <Card.Group>
-                <Card key={index} fluid>
+            <Card.Group key={index}>
+                <Card fluid>
                     <Card.Content>
                         <Card.Header>{campaign[0]}</Card.Header>
                         <Card.Meta>{campaign[2]}</Card.Meta>
