@@ -95,7 +95,7 @@ const CampaignDetails = (props) => {
                                 <Card.Description>A request is raised by manager to withdraw money from campaign. A request must be approved by atleast 50% contributors to withdraw money.</Card.Description>
                             </Card.Content>
                             <Card.Content extra>
-                                <Button floated="right" secondary onClick={() => router.push('/campaigns/' + {campAddress} + '/requests')}>View Requests</Button>
+                                <Button floated="right" secondary onClick={() => router.push('/campaigns/' + campAddress + '/requests')}>View Requests</Button>
                             </Card.Content>
                         </Card>
                     </Card.Group>

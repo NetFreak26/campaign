@@ -7,7 +7,7 @@ const Requests = (props) => {
     const campAddress = router.query.campAddress;
     return (
         <Layout>
-            <Button onClick={() => router.push('/campaigns/' + {campAddress} + '/requests/new')} primary>Add Request</Button>
+            <Button onClick={() => router.push('/campaigns/' + campAddress + '/requests/new')} primary>Add Request</Button>
         </Layout>
     )
 }
