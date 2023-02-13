@@ -109,6 +109,21 @@ contract Campaign {
         request.completed = true;
     }
 
+    function getSummary() public view returns(string memory, string memory, address, uint, uint, uint, uint, uint, uint, uint) {
+        return (
+            campaignName,
+            campaignDescription,
+            manager,
+            minimumContribution,
+            target,
+            deadline,
+            noOfContributors,
+            totalContribution,
+            address(this).balance,
+            requests.length
+        );
+    }
+
     function cancelRequest(uint _requestIndex) public onlyManager {
         require(requests[_requestIndex].completed == false, "You can not delete a completed request");
         Request storage request = requests[_requestIndex];
