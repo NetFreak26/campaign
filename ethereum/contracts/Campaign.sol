@@ -28,13 +28,13 @@ contract CampaignFactory {
 contract Campaign {
 
     struct Request {
+        uint id;
         string description;
         address payable recipient;
         uint value;
         bool completed;
         bool cancelled;
         uint noOfApprovals;
-        mapping(address=>bool) approvers;
     }
 
     string public campaignName;
@@ -47,6 +47,7 @@ contract Campaign {
     uint public totalContribution;
     mapping(address=>uint) public contributors;
     Request[] public requests;
+    mapping(address=>bool)[] approversList;
     bool onlyOnce = true;
 
 
@@ -85,16 +86,21 @@ contract Campaign {
         newRequest.completed = false;
         newRequest.cancelled = false;
         newRequest.noOfApprovals = 0;
+        approversList.push();
+    }
+
+    function getRequests() public view returns(Request[] memory) {
+        return requests;
     }
 
     function approveRequest(uint _requestIndex) public {
         require(contributors[msg.sender] >= minimumContribution, "You are not entitled to approve this request");
-        Request storage request = requests[_requestIndex];
 
-        require(request.approvers[msg.sender] == false, "You have already approved");
+        mapping(address=>bool) storage approvers = approversList[_requestIndex];
+        require(approvers[msg.sender] == false, "You have already approved");
 
-        request.approvers[msg.sender] = true;
-        request.noOfApprovals++; 
+        approvers[msg.sender] = true;
+        requests[_requestIndex].noOfApprovals++;
     }
 
     function finaliseRequest(uint _requestIndex) public onlyManager {
@@ -122,6 +128,14 @@ contract Campaign {
             address(this).balance,
             requests.length
         );
+    }
+
+    function checkManager(address checker) public view returns(bool) {
+        return checker == manager;
+    }
+
+    function checkContributor(address checker) public view returns(bool) {
+        return contributors[checker] > 0;
     }
 
     function cancelRequest(uint _requestIndex) public onlyManager {

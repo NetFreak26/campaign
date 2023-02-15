@@ -15,42 +15,53 @@ const CampaignIndex = (props) => {
 
     const router = useRouter();
 
-    const renderOpenCampaigns = props.campaigns
-        .filter(campaign => filterOpen(campaign[3]))
-        .map((campaign, index) => {
-            return (
-                <Card.Group key={index}>
-                    <Card fluid>
-                        <Card.Content>
-                            <Card.Header>{campaign[0]}</Card.Header>
-                            <Card.Meta>{campaign[2]}</Card.Meta>
-                            <Card.Description>{campaign[1]}</Card.Description>
-                        </Card.Content>
-                        <Card.Content extra>
-                            <Button floated="right" secondary onClick={() => router.push('/campaigns/' + campaign[2])}>View Campaign</Button>
-                        </Card.Content>
-                    </Card>
-                </Card.Group>
-            )
-        }
+    const renderOpenCampaigns = (
+        <Card.Group>
+            {props.campaigns
+                .filter(campaign => filterOpen(campaign[3]))
+                .map((campaign, index) => {
+                return (
+                    
+                        <Card key={index} fluid>
+                            <Card.Content>
+                                <Card.Header>{campaign[0]}</Card.Header>
+                                <Card.Meta>{campaign[2]}</Card.Meta>
+                                <Card.Description>{campaign[1]}</Card.Description>
+                            </Card.Content>
+                            <Card.Content extra>
+                                <Button floated="right" secondary onClick={() => router.push('/campaigns/' + campaign[2])}>View Campaign</Button>
+                            </Card.Content>
+                        </Card>
+                )
+            }
+        )}
+
+        </Card.Group>
     )
 
-    const renderClosedCampaigns = props.campaigns.filter(campaign => !filterOpen(campaign[3])).map((campaign, index) => {
-        return (
-            <Card.Group key={index}>
-                <Card fluid>
-                    <Card.Content>
-                        <Card.Header>{campaign[0]}</Card.Header>
-                        <Card.Meta>{campaign[2]}</Card.Meta>
-                        <Card.Description>{campaign[1]}</Card.Description>
-                    </Card.Content>
-                    <Card.Content extra>
-                    <Button floated="right" secondary onClick={() => router.push('/campaigns/' + campaign[2])}>View Campaign</Button>
-                    </Card.Content>
-                </Card>
-            </Card.Group>
-        )
-    })
+    const renderClosedCampaigns = (
+        <Card.Group>
+            {props.campaigns
+                .filter(campaign => !filterOpen(campaign[3]))
+                .map((campaign, index) => {
+                return (
+                    
+                        <Card key={index} fluid>
+                            <Card.Content>
+                                <Card.Header>{campaign[0]}</Card.Header>
+                                <Card.Meta>{campaign[2]}</Card.Meta>
+                                <Card.Description>{campaign[1]}</Card.Description>
+                            </Card.Content>
+                            <Card.Content extra>
+                                <Button floated="right" secondary onClick={() => router.push('/campaigns/' + campaign[2])}>View Campaign</Button>
+                            </Card.Content>
+                        </Card>
+                )
+            }
+        )}
+
+        </Card.Group>
+    )
 
     return (
         <Layout>
