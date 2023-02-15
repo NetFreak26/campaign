@@ -86,6 +86,7 @@ contract Campaign {
         newRequest.completed = false;
         newRequest.cancelled = false;
         newRequest.noOfApprovals = 0;
+        newRequest.id = requests.length;
         approversList.push();
     }
 

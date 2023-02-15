@@ -7,6 +7,8 @@ import web3 from "../../../../ethereum/web3";
 
 const Request = (props) => {
 
+    const [ request, setRequest ] = useState(props.request)
+
     const [ loading, setLoading ] = useState({
         approve: false,
         cancel: false,
@@ -23,6 +25,11 @@ const Request = (props) => {
 
     const campaign = Campaign(campAddress);
 
+    const update = async () => {
+        let temp = await campaign.methods.requests(id).call();
+        setRequest(temp);
+    }
+
     const approve = async () => {
         setLoading((previousState) => {
             return {
@@ -36,6 +43,7 @@ const Request = (props) => {
             await campaign.methods.approveRequest(parseInt(id)).send({
                 from: accounts[0]
             })
+            await update();
         } catch(err) {
             setErrorMessage(err.message);
             console.log(err);
@@ -61,6 +69,7 @@ const Request = (props) => {
             await campaign.methods.cancelRequest(parseInt(id)).send({
                 from: accounts[0]
             })
+            router.push('/campaigns/' + campAddress + '/requests')
         } catch(err) {
             setErrorMessage(err.message);
             console.log(err.message);
@@ -86,6 +95,7 @@ const Request = (props) => {
             await campaign.methods.finaliseRequest(parseInt(id)).send({
                 from: accounts[0]
             })
+            router.push('/campaigns/' + campAddress + '/requests')
         } catch(err) {
             setErrorMessage(err.message);
             console.log(err.message);
@@ -110,22 +120,22 @@ const Request = (props) => {
                 <Table.Body>
                     <Table.Row>
                         <Table.Cell>Description</Table.Cell>
-                        <Table.Cell>{props.request.description}</Table.Cell>
+                        <Table.Cell>{request.description}</Table.Cell>
                     </Table.Row>
 
                     <Table.Row>
                         <Table.Cell>Recipient</Table.Cell>
-                        <Table.Cell>{props.request.recipient}</Table.Cell>
+                        <Table.Cell>{request.recipient}</Table.Cell>
                     </Table.Row>
 
                     <Table.Row>
                         <Table.Cell>Amount (in wei)</Table.Cell>
-                        <Table.Cell>{props.request.value}</Table.Cell>
+                        <Table.Cell>{request.value}</Table.Cell>
                     </Table.Row>
 
                     <Table.Row>
                         <Table.Cell>Approvals Count</Table.Cell>
-                        <Table.Cell>{props.request.noOfApprovals} / {props.noOfContributors}</Table.Cell>
+                        <Table.Cell>{request.noOfApprovals} / {props.noOfContributors}</Table.Cell>
                     </Table.Row>
                 </Table.Body>
             </Table>

@@ -2,8 +2,13 @@ import { useRouter } from "next/router";
 import { Button, Tab, Table } from "semantic-ui-react";
 import Layout from "../../../components/Layout";
 import Campaign from "../../../ethereum/campaign";
+import { useState } from "react";
 
 const Requests = (props) => {
+
+
+    const [ requests, setRequest ] = useState(props.requests);
+
     const router = useRouter();
     const campAddress = router.query.campAddress;
 
@@ -12,6 +17,8 @@ const Requests = (props) => {
         { menuItem: 'Completed Requests', render: () => <Tab.Pane>{renderCompletedRequests}</Tab.Pane> },
         { menuItem: 'Cancelled Requests', render: () => <Tab.Pane>{renderCancelledRequests}</Tab.Pane> }
     ]
+
+
     const renderOpenRequests = (
         <Table>
             <Table.Header>
@@ -25,7 +32,7 @@ const Requests = (props) => {
                 </Table.Row>
             </Table.Header>
             <Table.Body>
-                {props.requests
+                {requests
                     .filter(request => request[4] == false && request[5] == false)
                     .map((request, index) => {
                         return (
@@ -59,7 +66,7 @@ const Requests = (props) => {
                 </Table.Row>
             </Table.Header>
             <Table.Body>
-                {props.requests
+                {requests
                     .filter(request => request[4] == true)
                     .map((request, index) => {
                         return (
@@ -91,7 +98,7 @@ const Requests = (props) => {
                 </Table.Row>
             </Table.Header>
             <Table.Body>
-                {props.requests
+                {requests
                     .filter(request => request[5] == true)
                     .map((request, index) => {
                         return (
