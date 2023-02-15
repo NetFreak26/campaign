@@ -54,7 +54,7 @@ const CreateRequestTemplate = () => {
                 subheader={campAddress}
                 dividing
             />
-            <Form onSubmit={handleSubmit}>
+            <Form onSubmit={handleSubmit} error={errorMessage !== undefined && errorMessage.length>0}>
                 <Form.Field>
                     <label>Description</label>
                     <TextArea 
