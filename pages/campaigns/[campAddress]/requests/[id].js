@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Button, Table } from "semantic-ui-react";
+import { Button, Message, Table } from "semantic-ui-react";
 import Layout from "../../../../components/Layout";
 import Campaign from "../../../../ethereum/campaign";
 import web3 from "../../../../ethereum/web3";
@@ -25,11 +25,6 @@ const Request = (props) => {
 
     const campaign = Campaign(campAddress);
 
-    const update = async () => {
-        let temp = await campaign.methods.requests(id).call();
-        setRequest(temp);
-    }
-
     const approve = async () => {
         setLoading((previousState) => {
             return {
@@ -40,10 +35,10 @@ const Request = (props) => {
         setErrorMessage("");
         try {
             const accounts = await web3.eth.getAccounts();
-            await campaign.methods.approveRequest(parseInt(id)).send({
+            await campaign.methods.approveRequest(parseInt(id) - 1).send({
                 from: accounts[0]
             })
-            await update();
+            router.push('/campaigns/' + campAddress + '/requests')
         } catch(err) {
             setErrorMessage(err.message);
             console.log(err);
@@ -66,7 +61,7 @@ const Request = (props) => {
         setErrorMessage("");
         try {
             const accounts = await web3.eth.getAccounts();
-            await campaign.methods.cancelRequest(parseInt(id)).send({
+            await campaign.methods.cancelRequest(parseInt(id) - 1).send({
                 from: accounts[0]
             })
             router.push('/campaigns/' + campAddress + '/requests')
@@ -92,7 +87,7 @@ const Request = (props) => {
         setErrorMessage("");
         try {
             const accounts = await web3.eth.getAccounts();
-            await campaign.methods.finaliseRequest(parseInt(id)).send({
+            await campaign.methods.finaliseRequest(parseInt(id) - 1).send({
                 from: accounts[0]
             })
             router.push('/campaigns/' + campAddress + '/requests')
@@ -154,7 +149,7 @@ Request.getInitialProps = async ({query}) => {
     const {id} = query;
     const { campAddress } = query;
     const campaign = Campaign(campAddress);
-    const request = await campaign.methods.requests(id).call();
+    const request = await campaign.methods.requests(parseInt(id) - 1).call();
     const noOfContributors = await campaign.methods.noOfContributors().call();
 
     return { request, noOfContributors }

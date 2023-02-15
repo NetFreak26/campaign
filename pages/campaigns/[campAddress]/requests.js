@@ -2,12 +2,19 @@ import { useRouter } from "next/router";
 import { Button, Tab, Table } from "semantic-ui-react";
 import Layout from "../../../components/Layout";
 import Campaign from "../../../ethereum/campaign";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Requests = (props) => {
 
 
-    const [ requests, setRequest ] = useState(props.requests);
+    const [ requests, setRequests ] = useState(props.requests);
+
+    useEffect(() => {
+        const update = async () => {
+            const temp = await campaign.methods.getRequests().call();
+            setRequests(temp);
+        }
+    })
 
     const router = useRouter();
     const campAddress = router.query.campAddress;
