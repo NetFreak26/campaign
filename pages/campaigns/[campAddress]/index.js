@@ -5,6 +5,7 @@ import { Card, Header, Button, Grid } from "semantic-ui-react";
 import ContributeForm from "../../../components/ContributeForm";
 import { useState } from "react";
 import Status from "../../../components/Status";
+import web3 from "../../../ethereum/web3";
 
 
 
@@ -23,6 +24,22 @@ const CampaignDetails = (props) => {
     const [totalContribution, setTotalContribution] = useState(props.totalContribution);
     const [balance, setBalance] = useState(props.balance);
     const [noOfRequests, setNoOfRequests] = useState(props.noOfRequests);
+    const [loading, setLoading ] = useState(false);
+
+    const handleClick = async () => {
+        setLoading(true);
+        const campaign = Campaign(campAddress);
+        try {
+            const accounts = await web3.eth.getAccounts();
+
+            await campaign.methods.refundContribution().send({
+                from: accounts[0]
+            })
+        } catch(err) {
+            console.log(err.message);
+        }
+        setLoading(false);
+    }
 
     const onFinish = async () => {
         const campaign = Campaign(campAddress);
@@ -100,8 +117,9 @@ const CampaignDetails = (props) => {
                         </Card>
                     </Card.Group>
                 </Grid.Column>
-                <Grid.Column width={6}>
+                <Grid.Column width={7}>
                     <ContributeForm address={campAddress} minimumContribution={minimumContribution} onFinish={onFinish}/>
+                    <Button loading={loading} floated="right" content='Refund' secondary onClick={handleClick} />
                     <Status deadline={deadline} />
                 </Grid.Column>
             </Grid>

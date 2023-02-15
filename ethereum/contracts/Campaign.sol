@@ -145,13 +145,6 @@ contract Campaign {
         request.cancelled = true;
     }
 
-    function extendDeadline(uint _deadline) public onlyManager {
-        require(block.timestamp > deadline && totalContribution < target, "You can not extend a deadline");
-        require(onlyOnce, "You have already extended deadline");
-        deadline = block.timestamp + _deadline;
-        onlyOnce = true;
-    }
-
     function refundContribution() public {
         require(block.timestamp > deadline && totalContribution < target, "You can not get a refund now");
         require(contributors[msg.sender] > minimumContribution, "You have not contributed anything");
